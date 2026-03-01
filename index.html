@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            --primary: #facc15; /* Yellow/Gold */
+            --primary: #facc15; 
             --bg-dark: #0a0a0c;
             --card-bg: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.08);
@@ -43,6 +43,7 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            appearance: none;
         }
 
         .input-field:focus {
@@ -79,6 +80,18 @@
             height: 4px;
             background: var(--primary);
             border-radius: 50%;
+        }
+
+        optgroup {
+            background: #1a1a1a;
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        option {
+            background: #0a0a0c;
+            color: white;
+            font-weight: normal;
         }
 
         .custom-scrollbar::-webkit-scrollbar { width: 3px; }
@@ -144,27 +157,55 @@
                             class="w-full input-field px-6 py-5 rounded-[24px] text-sm font-medium pr-12">
                         <i class="fa-solid fa-magnifying-glass absolute right-6 top-1/2 -translate-y-1/2 text-gray-600 text-xs group-focus-within:text-yellow-500"></i>
                     </div>
-                    
-                    <div id="dropdownList" class="absolute z-50 w-full mt-2 glass-card border border-white/10 max-h-72 overflow-y-auto hidden custom-scrollbar p-2"></div>
-                    
-                    <input type="hidden" id="finalName" name="nama">
-                    <input type="hidden" id="finalJabatan" name="jabatan">
-                    <input type="hidden" id="finalBiro" name="biro">
+                    <div id="dropdownList" class="absolute z-50 w-full mt-2 glass-card border border-white/10 max-h-60 overflow-y-auto hidden custom-scrollbar p-2"></div>
                 </div>
 
-                <!-- Display Info (Visual Only) -->
-                <div id="selectionPreview" class="hidden glass-card p-5 border-yellow-500/20 bg-yellow-500/5 animate-view">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold text-xs" id="initialName">?</div>
-                        <div>
-                            <p class="text-sm font-bold text-white" id="displayName">-</p>
-                            <p class="text-[10px] font-bold text-yellow-500 uppercase tracking-tighter" id="displayDetails">-</p>
-                        </div>
-                        <button type="button" onclick="clearSelection()" class="ml-auto text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                <!-- Navigasi Agenda / Lembaga -->
+                <div class="relative">
+                    <label class="text-[10px] font-bold text-gray-500 mb-3 block ml-1 uppercase tracking-widest">Agenda / Lembaga</label>
+                    <div class="relative">
+                        <select id="agendaLembaga" class="w-full input-field px-6 py-5 rounded-[24px] text-sm font-medium pr-12 appearance-none">
+                            <option value="" disabled selected>Pilih Klasifikasi Lembaga...</option>
+                            <optgroup label="Kategori BPH Rayon">
+                                <option value="BPH Rayon">BPH Rayon</option>
+                            </optgroup>
+                            <optgroup label="Kategori Biro">
+                                <option value="Biro Pengkaderan">Biro Pengkaderan</option>
+                                <option value="Biro Gerakan dan Advokasi">Biro Gerakan dan Advokasi</option>
+                                <option value="Biro Media dan Informasi">Biro Media dan Informasi</option>
+                                <option value="Biro Intelektual">Biro Intelektual</option>
+                                <option value="Biro Keagamaan">Biro Keagamaan</option>
+                            </optgroup>
+                            <optgroup label="Kategori LSO">
+                                <option value="LSO Laskar Alam">LSO Laskar Alam</option>
+                                <option value="LSO Kesenian Tukul">LSO Kesenian Tukul</option>
+                                <option value="LSO Jurlitbang">LSO Jurlitbang</option>
+                                <option value="LSO Entrepreneurship">LSO Entrepreneurship</option>
+                                <option value="LSO Olahraga">LSO Olahraga</option>
+                            </optgroup>
+                            <optgroup label="Kategori Badan Semi Otonom (BSO)">
+                                <option value="BPH Kopri">BPH Kopri</option>
+                                <option value="Biro Internal">Biro Internal</option>
+                                <option value="Biro Eksternal">Biro Eksternal</option>
+                            </optgroup>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-gray-600 text-[10px]"></i>
                     </div>
                 </div>
 
-                <!-- Photo -->
+                <!-- Display Selection Preview -->
+                <div id="selectionPreview" class="hidden glass-card p-5 border-yellow-500/20 bg-yellow-500/5 animate-view">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-yellow-500 flex items-center justify-center text-black font-bold text-xs" id="initialName">?</div>
+                        <div class="flex-1">
+                            <p class="text-sm font-bold text-white" id="displayName">-</p>
+                            <p class="text-[10px] font-bold text-yellow-500 uppercase tracking-tighter" id="displayDetails">-</p>
+                        </div>
+                        <button type="button" onclick="clearSelection()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+
+                <!-- Photo Documentation -->
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 mb-3 block ml-1 uppercase tracking-widest">Dokumentasi</label>
                     <div id="photoContainer" onclick="document.getElementById('fileInput').click()" 
@@ -176,10 +217,15 @@
                     <input type="file" id="fileInput" accept="image/*" capture="camera" class="hidden" onchange="handleImage(this)">
                 </div>
 
+                <!-- Hidden Inputs for logic -->
+                <input type="hidden" id="finalName">
+                <input type="hidden" id="finalJabatan">
+                <input type="hidden" id="finalBiro">
+
                 <!-- Notes -->
                 <div>
                     <label class="text-[10px] font-bold text-gray-500 mb-3 block ml-1 uppercase tracking-widest">Keterangan</label>
-                    <textarea name="keterangan" rows="2" class="w-full input-field px-6 py-5 rounded-[24px] text-sm font-medium" placeholder="Opsional..."></textarea>
+                    <textarea id="keterangan" rows="2" class="w-full input-field px-6 py-5 rounded-[24px] text-sm font-medium" placeholder="Opsional..."></textarea>
                 </div>
 
                 <button type="submit" id="submitBtn" class="w-full btn-primary py-6 rounded-[24px] text-xs font-extrabold uppercase mt-4">
@@ -191,34 +237,20 @@
         <!-- SECTION: STATISTIK -->
         <div id="section-statistik" class="hidden animate-view space-y-8">
             <h2 class="text-2xl font-bold text-center tracking-tight">Detail Kehadiran</h2>
-            
-            <!-- Group: BPH & BIRO -->
             <div class="space-y-4">
                 <h3 class="text-[10px] font-bold text-yellow-500 uppercase tracking-[0.3em] ml-2">Internal Rayon</h3>
                 <div class="grid grid-cols-1 gap-4">
-                    <div class="glass-card p-6">
-                        <canvas id="chartBPH" height="180"></canvas>
-                    </div>
-                    <div class="glass-card p-6">
-                        <canvas id="chartBiros" height="250"></canvas>
-                    </div>
+                    <div class="glass-card p-6"><canvas id="chartBPH" height="180"></canvas></div>
+                    <div class="glass-card p-6"><canvas id="chartBiros" height="250"></canvas></div>
                 </div>
             </div>
-
-            <!-- Group: LSO -->
             <div class="space-y-4">
                 <h3 class="text-[10px] font-bold text-yellow-500 uppercase tracking-[0.3em] ml-2">Lembaga Semi Otonom</h3>
-                <div class="glass-card p-6">
-                    <canvas id="chartLSO" height="280"></canvas>
-                </div>
+                <div class="glass-card p-6"><canvas id="chartLSO" height="280"></canvas></div>
             </div>
-
-            <!-- Group: BSO KOPRI -->
             <div class="space-y-4">
                 <h3 class="text-[10px] font-bold text-yellow-500 uppercase tracking-[0.3em] ml-2">BSO KOPRI</h3>
-                <div class="glass-card p-6">
-                    <canvas id="chartBSO" height="200"></canvas>
-                </div>
+                <div class="glass-card p-6"><canvas id="chartBSO" height="200"></canvas></div>
             </div>
         </div>
     </main>
@@ -227,63 +259,49 @@
     <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 rounded-full bg-white text-black text-[10px] font-bold hidden shadow-2xl uppercase tracking-widest"></div>
 
     <script>
-        // --- BACKEND HARDCODED ---
         const CONFIG = {
             url: "https://script.google.com/macros/s/AKfycbysk9CCpYu38nN0YW4wPEqLPIYdzVrcV-izeKJ6XnhDZztT-5csrIlt5DDz1jJtTv5E/exec",
             sheetId: "1cqxw4iWSx2bS0mn5lxQMDWhIykvj1-NItQ2NCslD0L4",
             folderId: "137QgYhzozz0rRTUT8JiM9H2FC5lBD3Cw"
         };
 
-        // --- DATABASE ---
         const members = [
-            // BPH
             {n: "Ahmad Puspa Radya Yuhda", j: "Ketua", b: "BPH"},
             {n: "Muhammad Khoirul Syafiq", j: "Wakil Ketua", b: "BPH"},
             {n: "Putri Budianto", j: "Sekretaris", b: "BPH"},
             {n: "M. Awaluddin Kamil", j: "Wakil Sekretaris", b: "BPH"},
             {n: "Dini Moningsih", j: "Bendahara", b: "BPH"},
             {n: "Lila Oktavia", j: "Wakil Bendahara", b: "BPH"},
-            // Biro Pengkaderan
             {n: "Mohamad Vitoni Febriansyah", j: "Koordinator", b: "Biro Pengkaderan"},
             ...["Sheva Aqilla Putra", "Nicky Suryani", "Mamduh Rusydan", "M. Fariza Farhan H.", "Lita Lisandra", "Daffa Muflihul Hilmiy", "Hoirotun Ni'am", "Muhammad Fatwa Fadhila Faza", "Cantika Tri Lestari", "Naufal Fatih Zahraan", "Manda Reva Dwi Afaf Putri", "Achmad Muzammil"].map(n => ({n, j: "Anggota", b: "Biro Pengkaderan"})),
-            // Biro Gerakan
             {n: "Rowiena Faradhita", j: "Koordinator", b: "Biro Gerakan & Advokasi"},
             ...["Fithrotun Nada", "M. Luthfi Luqman Al Mustofa", "Moh. Arifin", "Moh. Farhan", "Najeh Ahmad Alimudin", "Kevin William Tristan", "Muhammad Laudza'ul Arabi", "Muhammad Anas Al Hikam", "Dwi Gita Marsya Syakila", "Nuril Hilda Azizah"].map(n => ({n, j: "Anggota", b: "Biro Gerakan & Advokasi"})),
-            // Biro Media
             {n: "Vaneshalia Eka Rizqi Anggraini", j: "Koordinator", b: "Biro Media & Informasi"},
             ...["Muhammad Jimly Assiddiqie", "Muhammad Yahya Karisma", "Khoriyan Alfansyah", "El-fath Rahmadhany", "Muhammad Sulthon Rafiuddin", "Nabila Fatma Ramadhoni", "Dina Aqila Rosyida"].map(n => ({n, j: "Anggota", b: "Biro Media & Informasi"})),
-            // Biro Intelektual
             {n: "Muhammad Ali Wafa", j: "Koordinator", b: "Biro Intelektual"},
             ...["Irwan Pranata", "Ummi Hanik", "Fayyadhoh Tahta Alfina", "Muhammad Zuhal Ibrahim", "Helga Faocka Aztya", "Nabil Javier Ash Shidqi"].map(n => ({n, j: "Anggota", b: "Biro Intelektual"})),
-            // Biro Keagamaan
             {n: "Maulfi Fahrul Fahani", j: "Koordinator", b: "Biro Keagamaan"},
             ...["Mohammad Asibly", "Husniyatun Nafisah", "Izzah Hidayaturroyyan", "Karina Isnaini", "Zilza Zaitin Rias Sondak", "Nurvianti Anggreini", "Lailiyatul Istiqomah", "Mahatma Alvin Wahyu Yakhsallah"].map(n => ({n, j: "Anggota", b: "Biro Keagamaan"})),
-            // LSO Laskar Alam
             {n: "Muhammad Robit La Zuwardi", j: "Direktur", b: "LSO Laskar Alam"},
             {n: "Nasywa Muhaina Al-Hasan", j: "Sekretaris", b: "LSO Laskar Alam"},
             {n: "Habib Umar Muthohar", j: "Bendahara", b: "LSO Laskar Alam"},
             ...["Ahmad Nafar Tsani Saputra", "Mahardika Anugrah", "M. Faza Syihab Al Arifi", "Zidan Ahmad Dliyaul Haq", "Dzia Ul Haq Muhammad Aly Zuhdy", "Reva'el Sabrina Ellayali"].map(n => ({n, j: "Anggota", b: "LSO Laskar Alam"})),
-            // LSO Tukul
             {n: "Moch. Rizal Efendi", j: "Direktur", b: "LSO Kesenian Tukul"},
             {n: "Helda Nur Kumala Dewi", j: "Sekretaris", b: "LSO Kesenian Tukul"},
             {n: "Ma'rifatul Kamelia", j: "Bendahara", b: "LSO Kesenian Tukul"},
             ...["Nizam Ihludy Pramandyah", "Ahmad Afifudin Al Baihaqi", "Nazaruddin Aris Malik"].map(n => ({n, j: "Anggota", b: "LSO Kesenian Tukul"})),
-            // LSO Jurlitbang
             {n: "Ahmad Rosikhul Fahmi", j: "Direktur", b: "LSO Jurlitbang"},
             {n: "Rahmad Danuaji", j: "Sekretaris", b: "LSO Jurlitbang"},
             {n: "M. Miftachunnajach", j: "Bendahara", b: "LSO Jurlitbang"},
             ...["Ahmad Maulana Sofiansyah", "Mohammad Noferdi Adam", "Abdullah Shofa", "M. Rifqi Amali"].map(n => ({n, j: "Anggota", b: "LSO Jurlitbang"})),
-            // LSO Entrepreneurship
             {n: "Ananda Maisaroh Hasin", j: "Direktur", b: "LSO Entrepreneurship"},
             {n: "Putri Soleha", j: "Sekretaris", b: "LSO Entrepreneurship"},
             {n: "Nor Mar Atus Sholikah", j: "Bendahara", b: "LSO Entrepreneurship"},
             ...["Sri Ayu Wulaningsih", "Arin Nafisa Maulidia", "Salsabila Qurrota A'yun", "Dinda Aulia Nisya", "Moh. Mursyid Romli"].map(n => ({n, j: "Anggota", b: "LSO Entrepreneurship"})),
-            // LSO Olahraga
             {n: "Muhammad Rizqy Kamaluddin As-Say'ban", j: "Direktur", b: "LSO Olahraga"},
             {n: "M Shefly Aulia Anhar", j: "Sekretaris", b: "LSO Olahraga"},
             {n: "Rendy Ghalib Hibatullah", j: "Bendahara", b: "LSO Olahraga"},
             ...["Muhammad Arifurrohman Hasibuan", "Aldy Zahasfana Yusuf", "Ach. Mufid Madani", "Muhammad Daffa Jourdy"].map(n => ({n, j: "Anggota", b: "LSO Olahraga"})),
-            // BSO KOPRI
             {n: "Indah Nafazatin Nailia", j: "Ketua", b: "BPH KOPRI"},
             {n: "Yuliana Rosianti", j: "Sekretaris", b: "BPH KOPRI"},
             {n: "Fauziah Nur Arifah", j: "Bendahara", b: "BPH KOPRI"},
@@ -293,9 +311,8 @@
             ...["Indra Yani", "Diva Febri Nurafifa", "Cindy Nurcahyanti", "Ishdaulin Nikmatil Wafiroh", "Vina Rosalia Khoiroh", "Manzilatul Hikmiah", "Salsabila Arsyis Tawa Harviansyah"].map(n => ({n, j: "Anggota", b: "Biro Eksternal KOPRI"}))
         ];
 
-        // --- CORE LOGIC ---
         let currentImgBase64 = "";
-        
+
         function updateClock() {
             const now = new Date();
             document.getElementById('digital-clock').textContent = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
@@ -325,7 +342,7 @@
                 dropdown.classList.remove('hidden');
                 filtered.forEach(m => {
                     const div = document.createElement('div');
-                    div.className = "p-4 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0";
+                    div.className = "p-4 hover:bg-white/5 cursor-pointer border-b border-white/5 last:border-0 transition-all";
                     div.innerHTML = `<div class='text-sm font-bold'>${m.n}</div><div class='text-[9px] text-yellow-500 font-bold uppercase'>${m.j} • ${m.b}</div>`;
                     div.onclick = () => {
                         document.getElementById('finalName').value = m.n;
@@ -349,8 +366,8 @@
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     currentImgBase64 = e.target.result.split(',')[1];
-                    const p = document.getElementById('previewImg');
-                    p.src = e.target.result; p.classList.remove('hidden');
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('previewImg').classList.remove('hidden');
                 };
                 reader.readAsDataURL(file);
             }
@@ -358,7 +375,11 @@
 
         document.getElementById('attendanceForm').onsubmit = async (e) => {
             e.preventDefault();
-            if(!document.getElementById('finalName').value || !currentImgBase64) return alert("Pilih nama & ambil foto!");
+            const agenda = document.getElementById('agendaLembaga').value;
+            if(!document.getElementById('finalName').value || !currentImgBase64 || !agenda) {
+                alert("Harap isi Nama, Pilih Agenda Lembaga, dan Ambil Foto!");
+                return;
+            }
             
             const btn = document.getElementById('submitBtn');
             btn.disabled = true; btn.textContent = "MENGIRIM...";
@@ -367,8 +388,8 @@
                 nama: document.getElementById('finalName').value,
                 jabatan: document.getElementById('finalJabatan').value,
                 biro: document.getElementById('finalBiro').value,
-                tipe: "Stand Sore",
-                keterangan: e.target.keterangan.value,
+                tipe: "Stand Sore - " + agenda,
+                keterangan: document.getElementById('keterangan').value,
                 foto: currentImgBase64,
                 sheetId: CONFIG.sheetId,
                 folderId: CONFIG.folderId
@@ -376,46 +397,43 @@
 
             try {
                 await fetch(CONFIG.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                document.getElementById('toast').textContent = "PRESENSI BERHASIL!";
-                document.getElementById('toast').classList.remove('hidden');
-                setTimeout(() => document.getElementById('toast').classList.add('hidden'), 3000);
+                const toast = document.getElementById('toast');
+                toast.textContent = "PRESENSI BERHASIL TERKIRIM!";
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 3000);
                 e.target.reset(); clearSelection();
                 document.getElementById('previewImg').classList.add('hidden');
                 currentImgBase64 = "";
-            } catch (err) { alert("Gagal!"); }
+            } catch (err) { alert("Gagal mengirim data!"); }
             finally { btn.disabled = false; btn.textContent = "KIRIM PRESENSI"; }
         };
 
-        // --- CHARTS ---
-        function createChart(id, type, labels, data, title) {
-            const ctx = document.getElementById(id).getContext('2d');
-            new Chart(ctx, {
-                type: type,
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#facc15', '#3b82f6', '#ef4444', '#10b981', '#a855f7', '#f97316', '#06b6d4'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: '#888', font: { size: 9 }, usePointStyle: true } },
-                        title: { display: true, text: title.toUpperCase(), color: '#fff', font: { size: 11, weight: 'bold' } }
-                    }
-                }
-            });
-        }
-
         function renderAllCharts() {
-            // Placeholder data - in real scenario, this would be fetched from Sheet
-            createChart('chartBPH', 'doughnut', ['Hadir', 'Absen'], [75, 25], 'BPH Rayon');
-            createChart('chartBiros', 'bar', ['Kader', 'Gerakan', 'Media', 'Intelek', 'Agama'], [12, 15, 8, 10, 14], 'Kehadiran Biro');
-            createChart('chartLSO', 'polarArea', ['Alam', 'Tukul', 'Jurlit', 'Entrep', 'Sport'], [18, 12, 10, 14, 20], 'Kehadiran LSO');
-            createChart('chartBSO', 'pie', ['BPH Kopri', 'Internal', 'Eksternal'], [40, 30, 30], 'BSO KOPRI');
+            const chartConfigs = [
+                { id: 'chartBPH', type: 'doughnut', labels: ['Hadir', 'Absen'], data: [80, 20], title: 'BPH Rayon' },
+                { id: 'chartBiros', type: 'bar', labels: ['Kader', 'Gerakan', 'Media', 'Intelek', 'Agama'], data: [15, 12, 18, 10, 14], title: 'Presensi Biro' },
+                { id: 'chartLSO', type: 'polarArea', labels: ['Alam', 'Tukul', 'Jurlit', 'Entrep', 'Sport'], data: [12, 19, 10, 15, 22], title: 'Lembaga Semi Otonom' },
+                { id: 'chartBSO', type: 'pie', labels: ['BPH', 'Internal', 'Eksternal'], data: [30, 45, 25], title: 'BSO KOPRI' }
+            ];
+
+            chartConfigs.forEach(conf => {
+                const ctx = document.getElementById(conf.id).getContext('2d');
+                new Chart(ctx, {
+                    type: conf.type,
+                    data: {
+                        labels: conf.labels,
+                        datasets: [{ data: conf.data, backgroundColor: ['#facc15', '#3b82f6', '#ef4444', '#10b981', '#a855f7'], borderWidth: 0 }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#888', font: { size: 9 }, usePointStyle: true } },
+                            title: { display: true, text: conf.title.toUpperCase(), color: '#fff', font: { size: 11, weight: 'bold' } }
+                        }
+                    }
+                });
+            });
         }
     </script>
 </body>
